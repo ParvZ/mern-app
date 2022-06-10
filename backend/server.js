@@ -1,20 +1,28 @@
 const express = require('express')
-const cors = require('cors')
 const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
 require('dotenv').config();
 
 const app = express();
 const port = 3000;
 
 app.use(express.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 
-const uri = process.env.ATLAS_URI;
-mongoose.connect( uri , { useNewUrlParser: true, useCreateIndex: true},()=>{
-    console.log('MongoDB connected successfully')
-})
 
 app.get('/', (req,res)=>{
-    res.send('Hi')
+    res.send('Hi, from mern app')
+})
+
+const exercisesRouter = require('./routes/exercises')
+const usersRouter = require('./routes/users')
+
+app.use('/exercises', exercisesRouter)
+app.use('/users', usersRouter)
+
+const uri = process.env.ATLAS_URI;
+mongoose.connect( uri , { useNewUrlParser: true},()=>{
+    console.log('MongoDB connected successfully')
 })
 
 app.listen(port, () =>{
